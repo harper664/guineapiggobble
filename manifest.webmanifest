@@ -1,6 +1,6 @@
 {
-  "name": "Can My Guinea Pig Eat This?",
-  "short_name": "Pig Food",
+  "name": "Gobble",
+  "short_name": "Gobble",
   "description": "Quickly check if a guinea pig can eat a food and how much.",
   "start_url": "./index.html",
   "scope": "./",
