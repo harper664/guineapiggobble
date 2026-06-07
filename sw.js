@@ -1,12 +1,10 @@
-// Simple offline cache. The whole app and its data live in index.html,
-// so caching the shell makes the app fully usable with no connection.
 const CACHE = 'gpfc-v1';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', e => {
@@ -24,7 +22,5 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request))
-  );
+  e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request)));
 });
