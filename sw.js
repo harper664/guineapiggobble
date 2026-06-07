@@ -1,4 +1,4 @@
-const CACHE = 'gpfc-v1';
+const CACHE = 'gpfc-v2';
 const ASSETS = [
   './',
   './index.html',
