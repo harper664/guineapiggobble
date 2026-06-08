@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f4ead3">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Can My Guinea Pig Eat This?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f4ead3;--cream-deep:#ecdcb8;--ink:#3a2f23;--ink-soft:#6b5b46;--card:#fffdf7;
+    --safe:#3f9b54;--safe-bg:#e4f4e3;--limit:#d98a16;--limit-bg:#fbeecd;--never:#c8453b;--never-bg:#f8e1de;
+    --unknown:#6f7b82;--unknown-bg:#e9edee;
+    --shadow:0 10px 30px rgba(58,47,35,.12);--shadow-sm:0 4px 14px rgba(58,47,35,.10);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Nunito',sans-serif;color:var(--ink);
+    background:
+      radial-gradient(900px 500px at 80% -10%, #fbf3df 0%, transparent 60%),
+      radial-gradient(700px 500px at -10% 110%, #f0e2c2 0%, transparent 55%),
+      var(--cream);
+    min-height:100vh;-webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative;z-index:1;max-width:540px;margin:0 auto;padding:22px 18px 60px;}
+  header{display:flex;align-items:center;gap:12px;margin:6px 2px 18px;}
+  .pig{flex:none;width:54px;height:54px;filter:drop-shadow(0 4px 6px rgba(58,47,35,.18));}
+  h1{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.5rem;line-height:1.05;margin:0;letter-spacing:-.01em;}
+  h1 span{display:block;font-size:.78rem;font-weight:600;color:var(--ink-soft);font-family:'Nunito',sans-serif;letter-spacing:.02em;margin-top:3px;}
+  .search{position:relative;margin-bottom:14px;}
+  .search input{
+    width:100%;border:none;outline:none;background:var(--card);border-radius:18px;
+    padding:18px 48px 18px 20px;font-family:'Baloo 2',cursive;font-weight:600;font-size:1.2rem;color:var(--ink);
+    box-shadow:var(--shadow);border:2.5px solid transparent;transition:border-color .18s ease;
+  }
+  .search input::placeholder{color:#c4b48f;font-weight:500;}
+  .search input:focus{border-color:var(--limit);}
+  .clear{
+    position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:var(--cream-deep);
+    color:var(--ink-soft);width:30px;height:30px;border-radius:50%;font-size:1rem;cursor:pointer;
+    display:none;align-items:center;justify-content:center;line-height:1;
+  }
+  .clear.show{display:flex;}
+  .card{
+    background:var(--card);border-radius:22px;padding:20px 20px 18px;box-shadow:var(--shadow);
+    margin-bottom:14px;border-left:7px solid var(--ink-soft);animation:pop .22s ease;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.99);}to{opacity:1;transform:none;}}
+  .card.safe{border-left-color:var(--safe);}
+  .card.limit{border-left-color:var(--limit);}
+  .card.never{border-left-color:var(--never);}
+  .card.unknown{border-left-color:var(--unknown);}
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+  .food-name{font-family:'Baloo 2',cursive;font-weight:700;font-size:1.5rem;text-transform:capitalize;line-height:1.1;}
+  .badge{flex:none;font-family:'Baloo 2',cursive;font-weight:700;font-size:.8rem;padding:7px 14px;border-radius:999px;letter-spacing:.02em;white-space:nowrap;}
+  .badge.safe{background:var(--safe-bg);color:var(--safe);}
+  .badge.limit{background:var(--limit-bg);color:#a9670a;}
+  .badge.never{background:var(--never-bg);color:var(--never);}
+  .badge.unknown{background:var(--unknown-bg);color:var(--unknown);}
+  .rows{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+  .row{display:flex;gap:11px;align-items:flex-start;font-size:1rem;}
+  .row .ic{flex:none;font-size:1.05rem;width:22px;text-align:center;padding-top:1px;}
+  .row b{font-weight:700;}
+  .note{color:var(--ink-soft);font-size:.96rem;line-height:1.4;}
+  .more{margin:2px 2px 0;}
+  .more-label{font-size:.78rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin:6px 4px;}
+  .sug{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;background:var(--card);
+    border:none;border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow-sm);
+    font-family:'Nunito';font-size:1rem;color:var(--ink);font-weight:600;
+  }
+  .dot{flex:none;width:11px;height:11px;border-radius:50%;}
+  .dot.safe{background:var(--safe);}.dot.limit{background:var(--limit);}.dot.never{background:var(--never);}
+  .dot.unknown{background:var(--unknown);}
+  .sug .nm{text-transform:capitalize;}
+  .chips-label{font-size:.78rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin:18px 4px 9px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    font-family:'Nunito';font-weight:700;font-size:.92rem;color:var(--ink);background:var(--card);
+    border:1.5px solid var(--cream-deep);border-radius:999px;padding:8px 14px;cursor:pointer;box-shadow:var(--shadow-sm);text-transform:capitalize;
+  }
+  .chip:active{transform:scale(.96);}
+  .basics{margin-top:26px;background:rgba(255,253,247,.7);border:1.5px solid var(--cream-deep);border-radius:18px;padding:16px 18px;}
+  .basics h2{font-family:'Baloo 2';font-size:1.05rem;margin:0 0 8px;}
+  .basics ul{margin:0;padding-left:18px;color:var(--ink-soft);font-size:.94rem;line-height:1.55;}
+  .basics li{margin-bottom:4px;}
+  .disclaimer{margin-top:16px;text-align:center;font-size:.8rem;color:#9a8a6e;line-height:1.45;padding:0 8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="pig" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="32" cy="38" rx="24" ry="20" fill="#b9844f"/>
+      <ellipse cx="32" cy="44" rx="17" ry="13" fill="#f0d7a8"/>
+      <path d="M14 26c-4-3-3-9 1-9 3 0 5 4 4 8z" fill="#8c5e30"/>
+      <path d="M50 26c4-3 3-9-1-9-3 0-5 4-4 8z" fill="#8c5e30"/>
+      <circle cx="24" cy="34" r="2.6" fill="#3a2f23"/><circle cx="40" cy="34" r="2.6" fill="#3a2f23"/>
+      <circle cx="24.8" cy="33.2" r=".8" fill="#fff"/><circle cx="40.8" cy="33.2" r=".8" fill="#fff"/>
+      <ellipse cx="32" cy="40" rx="3" ry="2.2" fill="#c8453b"/>
+      <path d="M30 42c.6 1.4 3.4 1.4 4 0" stroke="#3a2f23" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    <h1>Can My Guinea Pig Eat This?<span>Type a food. Get the answer.</span></h1>
+  </header>
+
+  <div class="search">
+    <input id="q" type="text" autocomplete="off" autocapitalize="off" autocorrect="off"
+           spellcheck="false" enterkeyhint="search" placeholder="Start typing a food..." aria-label="Food name">
+    <button class="clear" id="clear" aria-label="Clear">&times;</button>
+  </div>
+
+  <div id="result"></div>
+
+  <div id="quick">
+    <div class="chips-label">Quick check</div>
+    <div class="chips" id="chips"></div>
+    <div class="basics">
+      <h2>Daily diet basics</h2>
+      <ul>
+        <li><b>Hay</b> always available. Roughly 80% of the diet.</li>
+        <li>About <b>1 cup of fresh veg</b> per pig per day, mostly leafy greens.</li>
+        <li>A <b>vitamin C</b> source daily. Guinea pigs cannot make their own.</li>
+        <li>Around <b>1/8 cup of plain pellets</b> daily.</li>
+        <li>Introduce any new food <b>slowly</b> and in small amounts.</li>
+        <li>Many <b>garden plants are poisonous</b>. Never offer anything you cannot identify for certain.</li>
+      </ul>
+    </div>
+    <p class="disclaimer">A quick guide, not veterinary advice. For health concerns or foods not listed, check with an exotic vet.</p>
+  </div>
+</div>
+
+<script>
+const FOODS = [
+  // Staples
+  {n:"hay (timothy / meadow)", a:["hay","timothy","meadow hay","orchard hay","grass hay"], s:"safe", amt:"Unlimited, always available", freq:"Every day, all day", note:"The most important food. Keeps teeth and gut healthy."},
+  {n:"fresh grass", a:["grass","lawn"], s:"safe", amt:"A handful", freq:"Daily if available", note:"Must be pesticide free and never lawn-mower clippings."},
+  {n:"pellets (plain timothy)", a:["pellets","pellet","nuggets"], s:"safe", amt:"About 1/8 cup", freq:"Daily", note:"Plain vitamin C fortified pellets. Avoid muesli style mixes."},
+  {n:"alfalfa / lucerne hay", a:["alfalfa","lucerne","lucern"], s:"limit", amt:"Young, pregnant or nursing only", freq:"Not for healthy adults", note:"Very high in calcium. Adults can develop bladder stones."},
+  {n:"readigrass / dried grass", a:["readigrass","dried grass"], s:"safe", amt:"A small handful", freq:"A few times a week", note:"Dried grass forage, a nice variation alongside hay."},
+
+  // Daily greens and herbs
+  {n:"capsicum / bell pepper", a:["capsicum","bell pepper","pepper","red pepper","green pepper","yellow pepper"], s:"safe", amt:"1 to 2 thin slices", freq:"Daily", note:"Excellent vitamin C. Remove seeds. A top everyday choice."},
+  {n:"cucumber", a:["cucumber","telegraph cucumber","lebanese cucumber"], s:"safe", amt:"A few thin slices", freq:"Daily", note:"Very hydrating and gentle. Low in nutrients, so pair with leafy greens."},
+  {n:"cos / romaine lettuce", a:["cos","cos lettuce","romaine","romaine lettuce"], s:"safe", amt:"1 to 2 leaves", freq:"Daily", note:"A good safe daily lettuce, far better than iceberg."},
+  {n:"green or red leaf lettuce", a:["green leaf lettuce","red leaf lettuce","leaf lettuce","oak leaf"], s:"safe", amt:"1 to 2 leaves", freq:"Daily", note:"Soft leafy lettuces are a fine daily base green."},
+  {n:"butterhead lettuce", a:["butterhead","butter lettuce","bibb lettuce"], s:"safe", amt:"1 to 2 leaves", freq:"Daily", note:"Soft mild lettuce, safe most days."},
+  {n:"lamb's lettuce / mache", a:["lambs lettuce","lamb's lettuce","mache","corn salad"], s:"safe", amt:"A small handful", freq:"Most days", note:"Tender mild green, well tolerated."},
+  {n:"coriander / cilantro", a:["coriander","cilantro"], s:"safe", amt:"A small handful", freq:"Daily", note:"Popular fresh herb, well liked and safe most days."},
+  {n:"endive", a:["endive","escarole","chicory"], s:"safe", amt:"1 to 2 leaves", freq:"Daily", note:"Nutritious leafy green, low in calcium."},
+  {n:"radicchio", a:["radicchio"], s:"safe", amt:"A small leaf", freq:"A few times a week", note:"Slightly bitter leaf, fine in moderation."},
+  {n:"fennel", a:["fennel"], s:"safe", amt:"A small piece with fronds", freq:"Most days", note:"Bulb and fronds are both safe and usually a favourite."},
+  {n:"dandelion greens", a:["dandelion","dandelion greens","dandelion leaves"], s:"safe", amt:"A small handful", freq:"Most days", note:"Very nutritious if picked away from roads and pesticides."},
+  {n:"carrot tops", a:["carrot tops","carrot leaves","carrot greens"], s:"safe", amt:"A small handful", freq:"Most days", note:"The leafy tops are healthier than the root and can be given more often."},
+  {n:"kohlrabi", a:["kohlrabi"], s:"safe", amt:"A small piece", freq:"A few times a week", note:"Mild and well tolerated, leaves are fine too."},
+  {n:"courgette / zucchini", a:["courgette","zucchini"], s:"safe", amt:"A few slices", freq:"Most days", note:"Mild and well tolerated. Skin on is fine."},
+  {n:"summer squash", a:["summer squash","yellow squash","pattypan"], s:"safe", amt:"A few slices", freq:"Most days", note:"Mild and gentle, similar to courgette."},
+  {n:"basil", a:["basil"], s:"safe", amt:"A few leaves", freq:"Several times a week", note:"Fragrant herb, fine in small amounts."},
+  {n:"dill", a:["dill"], s:"safe", amt:"A small sprig", freq:"Several times a week", note:"Safe herb in modest amounts."},
+  {n:"mint", a:["mint","peppermint","spearmint"], s:"safe", amt:"A few leaves", freq:"Several times a week", note:"Fine in small amounts."},
+  {n:"lemon balm", a:["lemon balm","melissa"], s:"safe", amt:"A few leaves", freq:"Several times a week", note:"Mild safe herb."},
+  {n:"oregano", a:["oregano"], s:"safe", amt:"A small sprig", freq:"A few times a week", note:"Safe aromatic herb in small amounts."},
+  {n:"thyme", a:["thyme"], s:"safe", amt:"A small sprig", freq:"A few times a week", note:"Safe herb, small amounts."},
+  {n:"sage", a:["sage"], s:"safe", amt:"A few leaves", freq:"A few times a week", note:"Strong herb, offer sparingly."},
+  {n:"rosemary", a:["rosemary"], s:"safe", amt:"A small sprig", freq:"Occasionally", note:"Aromatic herb, small amounts only."},
+
+  // Limit vegetables
+  {n:"rocket / arugula", a:["rocket","arugula","rucola"], s:"limit", amt:"A small handful", freq:"A few times a week", note:"Peppery and a little high in calcium, so not every day."},
+  {n:"watercress", a:["watercress"], s:"limit", amt:"A small handful", freq:"A few times a week", note:"Nutritious but higher in calcium."},
+  {n:"parsley", a:["parsley"], s:"limit", amt:"A small sprig", freq:"2 to 3 times a week", note:"High vitamin C but high in calcium and oxalates. Limit it."},
+  {n:"kale", a:["kale"], s:"limit", amt:"A small leaf", freq:"1 to 2 times a week", note:"Very nutritious but high in calcium. A sometimes green."},
+  {n:"spinach", a:["spinach","baby spinach"], s:"limit", amt:"A small leaf", freq:"Occasionally", note:"High in oxalates and calcium. Small infrequent amounts."},
+  {n:"silverbeet / swiss chard", a:["silverbeet","silver beet","swiss chard","chard"], s:"limit", amt:"A small leaf", freq:"Occasionally", note:"High in oxalates. Keep it occasional."},
+  {n:"collard / spring greens", a:["collard","collard greens","spring greens"], s:"limit", amt:"A small leaf", freq:"1 to 2 times a week", note:"Nutritious but high in calcium."},
+  {n:"mustard greens", a:["mustard greens"], s:"limit", amt:"A small leaf", freq:"Occasionally", note:"Peppery and high in calcium. Occasional only."},
+  {n:"turnip greens", a:["turnip greens","turnip tops"], s:"limit", amt:"A small leaf", freq:"Occasionally", note:"High in calcium. Small amounts."},
+  {n:"carrot", a:["carrot","carrots"], s:"limit", amt:"A couple of thin slices", freq:"2 to 3 times a week", note:"High in sugar, a treat not a staple."},
+  {n:"celery", a:["celery"], s:"limit", amt:"A short stick", freq:"A few times a week", note:"Cut across the stringy fibres into small pieces to avoid choking."},
+  {n:"tomato", a:["tomato","tomatoes","cherry tomato"], s:"limit", amt:"A small piece", freq:"A few times a week", note:"Flesh only. The leaves, stem and green unripe fruit are toxic."},
+  {n:"broccoli", a:["broccoli"], s:"limit", amt:"A small floret", freq:"1 to 2 times a week", note:"Nutritious but can cause gas. Keep portions small."},
+  {n:"cauliflower", a:["cauliflower"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Can cause gas. Small amounts, leaves are fine too."},
+  {n:"cabbage", a:["cabbage","red cabbage","savoy","savoy cabbage"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Gassy if overfed. Small amounts now and then."},
+  {n:"chinese cabbage / wombok", a:["chinese cabbage","wombok","napa cabbage","napa"], s:"limit", amt:"A small leaf", freq:"A few times a week", note:"Milder than common cabbage but still can cause gas."},
+  {n:"bok choy / pak choi", a:["bok choy","pak choi","pak choy"], s:"limit", amt:"A small leaf", freq:"A few times a week", note:"Fine in moderation."},
+  {n:"brussels sprouts", a:["brussels sprouts","sprouts"], s:"limit", amt:"Half a sprout", freq:"Occasionally", note:"Gassy. Small amounts only."},
+  {n:"green beans", a:["green beans","string beans","runner beans"], s:"limit", amt:"One or two beans", freq:"A few times a week", note:"Fresh raw beans in small amounts. Not dried beans."},
+  {n:"peas / pea pods", a:["peas","pea","snow peas","mangetout","sugar snap","pea pods"], s:"limit", amt:"A few pods", freq:"A few times a week", note:"Fine in small amounts, higher in sugar than greens."},
+  {n:"corn / sweetcorn", a:["corn","sweetcorn","maize"], s:"limit", amt:"Husk and silk freely, a little kernel", freq:"Occasionally", note:"Green husk and silk are great. Kernels are starchy, so only a little."},
+  {n:"beetroot", a:["beetroot","beet","beets"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Sugary and can turn urine pink. Greens are also limited for oxalates."},
+  {n:"radish", a:["radish","radishes"], s:"limit", amt:"A thin slice", freq:"Occasionally", note:"A little peppery. The leafy tops are safer and can be given more often."},
+  {n:"turnip", a:["turnip"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Starchy root, small amounts."},
+  {n:"swede", a:["swede","rutabaga"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Starchy root, small amounts."},
+  {n:"pumpkin", a:["pumpkin"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Starchy and a little sugary. Small amounts of raw flesh."},
+  {n:"butternut / squash", a:["butternut","butternut squash","squash","winter squash"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Starchy. Small amounts of raw flesh."},
+  {n:"asparagus", a:["asparagus"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Fine raw in small amounts, can make urine smell."},
+  {n:"sweet potato / kumara", a:["sweet potato","kumara","kumera"], s:"limit", amt:"A very small piece", freq:"Rarely", note:"Starchy and sugary. Only a tiny amount of raw flesh, if at all."},
+  {n:"eggplant / aubergine", a:["eggplant","aubergine"], s:"limit", amt:"A small piece of flesh", freq:"Occasionally", note:"Ripe flesh only. The leaves and green parts are toxic nightshade."},
+
+  // Fruit treats
+  {n:"apple", a:["apple","apples"], s:"limit", amt:"A small slice", freq:"1 to 2 times a week", note:"Always remove the pips, they contain a cyanide compound."},
+  {n:"pear", a:["pear","pears"], s:"limit", amt:"A small piece", freq:"1 to 2 times a week", note:"Remove the pips. Sugary treat."},
+  {n:"banana", a:["banana","bananas"], s:"limit", amt:"A thin slice", freq:"Once a week", note:"High in sugar and starch. Tiny amounts only."},
+  {n:"strawberry", a:["strawberry","strawberries"], s:"limit", amt:"One small berry or slice", freq:"1 to 2 times a week", note:"Good vitamin C but sugary, keep it a treat."},
+  {n:"blueberry", a:["blueberry","blueberries"], s:"limit", amt:"1 to 2 berries", freq:"1 to 2 times a week", note:"Antioxidant rich treat in small amounts."},
+  {n:"raspberry / blackberry", a:["raspberry","raspberries","blackberry","blackberries"], s:"limit", amt:"1 to 2 berries", freq:"1 to 2 times a week", note:"Small sweet treat. The leaves are also safe."},
+  {n:"cranberry", a:["cranberry","cranberries"], s:"limit", amt:"One small berry", freq:"Occasionally", note:"Tart and small. Fresh only, never sweetened or dried."},
+  {n:"kiwifruit", a:["kiwifruit","kiwi","kiwi fruit"], s:"limit", amt:"A small piece", freq:"1 to 2 times a week", note:"Very high in vitamin C. Sugary, so a treat sized portion."},
+  {n:"orange", a:["orange","oranges","mandarin","tangerine"], s:"limit", amt:"A small segment", freq:"Once a week", note:"Good vitamin C but acidic. Small amounts."},
+  {n:"grapefruit", a:["grapefruit"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Very acidic. A little flesh only, less suitable than orange."},
+  {n:"grapes", a:["grapes","grape"], s:"limit", amt:"1 to 2 grapes", freq:"Once a week", note:"Very sugary. Halve them and use seedless."},
+  {n:"melon", a:["melon","rockmelon","cantaloupe","honeydew"], s:"limit", amt:"A small piece of flesh", freq:"Once a week", note:"Hydrating sweet treat, flesh only."},
+  {n:"watermelon", a:["watermelon"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Mostly water and sugar. A little flesh, a little rind is fine."},
+  {n:"mango", a:["mango"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Sweet and fibrous, treat sized portions."},
+  {n:"pineapple", a:["pineapple"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Acidic and sugary. A little fresh flesh only."},
+  {n:"peach", a:["peach","peaches"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Remove the stone. Sugary treat."},
+  {n:"nectarine", a:["nectarine"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Remove the stone. Sugary treat."},
+  {n:"apricot", a:["apricot","apricots"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Remove the stone. Sugary, so small amounts."},
+  {n:"plum", a:["plum","plums"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Remove the stone. Sugary treat."},
+  {n:"cherry", a:["cherry","cherries"], s:"limit", amt:"One, stone removed", freq:"Once a week", note:"Remove the stone and stem. Small sweet treat."},
+  {n:"fig", a:["fig","figs"], s:"limit", amt:"A small piece", freq:"Rarely", note:"Very sugary, only a tiny piece of fresh fig."},
+  {n:"papaya / pawpaw", a:["papaya","pawpaw"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Sweet tropical treat, small amounts of flesh."},
+  {n:"guava", a:["guava"], s:"limit", amt:"A small piece", freq:"Once a week", note:"High in vitamin C but sugary, treat sized."},
+  {n:"pomegranate", a:["pomegranate"], s:"limit", amt:"A few seeds", freq:"Occasionally", note:"A few arils only, quite sugary."},
+  {n:"passionfruit", a:["passionfruit","passion fruit"], s:"limit", amt:"A small amount", freq:"Rarely", note:"Very sweet and seedy, only a tiny taste."},
+
+  // Never
+  {n:"iceberg lettuce", a:["iceberg","iceberg lettuce"], s:"never", amt:"None", freq:"Avoid", note:"Mostly water with little nutrition and can cause diarrhoea. Use cos or leaf lettuce instead."},
+  {n:"lemon / lime", a:["lemon","lemons","lime","limes","citrus"], s:"never", amt:"None", freq:"Avoid", note:"Too acidic and sour. For a citrus vitamin C treat, a small piece of orange is the safer choice."},
+  {n:"starfruit", a:["starfruit","star fruit","carambola"], s:"never", amt:"None", freq:"Never", note:"Linked to kidney problems in small animals. Best avoided entirely."},
+  {n:"onion", a:["onion","onions","spring onion","shallot","leek","chives"], s:"never", amt:"None", freq:"Never", note:"Toxic. Damages red blood cells."},
+  {n:"garlic", a:["garlic"], s:"never", amt:"None", freq:"Never", note:"Toxic, same family as onion."},
+  {n:"potato", a:["potato","potatoes","raw potato","potato peel"], s:"never", amt:"None", freq:"Never", note:"Starchy, and the green parts and peel contain toxic solanine."},
+  {n:"avocado", a:["avocado","avo"], s:"never", amt:"None", freq:"Never", note:"Far too fatty and contains persin. Not safe."},
+  {n:"chocolate", a:["chocolate","cocoa"], s:"never", amt:"None", freq:"Never", note:"Toxic. Contains caffeine and theobromine."},
+  {n:"caffeine (coffee, tea)", a:["coffee","tea","caffeine","energy drink"], s:"never", amt:"None", freq:"Never", note:"Toxic to guinea pigs. Never give anything caffeinated."},
+  {n:"rhubarb", a:["rhubarb"], s:"never", amt:"None", freq:"Never", note:"High in oxalic acid. The leaves especially are poisonous."},
+  {n:"mushroom", a:["mushroom","mushrooms"], s:"never", amt:"None", freq:"Avoid", note:"No nutritional value and some types are toxic."},
+  {n:"ginger", a:["ginger"], s:"never", amt:"None", freq:"Avoid", note:"Too strong and pungent for their digestion."},
+  {n:"bread, pasta, rice, crackers", a:["bread","pasta","crackers","cereal","biscuit","rice","chips","popcorn"], s:"never", amt:"None", freq:"Never", note:"Processed and starchy. The gut cannot handle these."},
+  {n:"dairy (milk, cheese, yoghurt)", a:["milk","cheese","yoghurt","yogurt","dairy","butter","cream"], s:"never", amt:"None", freq:"Never", note:"Guinea pigs cannot digest dairy at all."},
+  {n:"meat and eggs", a:["meat","chicken","beef","fish","ham","egg","eggs"], s:"never", amt:"None", freq:"Never", note:"Strict herbivores. No animal products."},
+  {n:"nuts and seeds", a:["nuts","seeds","peanut","almond","walnut","sunflower seeds"], s:"never", amt:"None", freq:"Avoid", note:"Too fatty and a choking hazard."},
+  {n:"chilli / hot peppers", a:["chilli","chili","hot pepper","jalapeno"], s:"never", amt:"None", freq:"Never", note:"Far too irritating. Stick to sweet capsicum."},
+  {n:"coconut", a:["coconut"], s:"never", amt:"None", freq:"Avoid", note:"Very high in fat. Not suitable."},
+  {n:"dried beans", a:["beans","dried beans","kidney beans","baked beans"], s:"never", amt:"None", freq:"Never", note:"Raw and dried beans are toxic and starchy."},
+  {n:"dried fruit (raisins, dates)", a:["raisins","sultanas","dates","dried fruit","dried apricot"], s:"never", amt:"None", freq:"Avoid", note:"Sugar is far too concentrated when dried. Use fresh fruit instead."},
+  {n:"commercial sugary treats", a:["yoghurt drops","treat drops","sugary treats","sweets","lolly","candy","jam","honey"], s:"never", amt:"None", freq:"Never", note:"Marketed for pets but harmful. Use a slice of veg as a treat instead."},
+
+  // Garden forage, weeds and browse (safe)
+  {n:"plantain (weed)", a:["plantain","ribwort","plantain weed","plantago"], s:"safe", amt:"A small handful", freq:"Most days", note:"The lawn weed, not the banana. Nutritious safe forage if pesticide free."},
+  {n:"chickweed", a:["chickweed"], s:"safe", amt:"A small handful", freq:"Most days", note:"Common garden weed, safe and well liked. Pick away from roads."},
+  {n:"clover", a:["clover","white clover","red clover"], s:"limit", amt:"A small amount", freq:"A few times a week", note:"Safe but rich. Too much can cause gas and bloat, so go easy."},
+  {n:"dead nettle", a:["dead nettle","deadnettle"], s:"safe", amt:"A small handful", freq:"A few times a week", note:"Safe forage, not the stinging kind."},
+  {n:"cleavers / goosegrass", a:["cleavers","goosegrass","sticky weed","sticky willy"], s:"safe", amt:"A small handful", freq:"A few times a week", note:"Common sticky garden weed, safe to forage."},
+  {n:"sow thistle", a:["sow thistle"], s:"safe", amt:"A small handful", freq:"A few times a week", note:"Soft-leaved weed they enjoy. Pick clean and pesticide free."},
+  {n:"mallow", a:["mallow","common mallow"], s:"safe", amt:"A small handful", freq:"A few times a week", note:"Leaves and flowers are safe forage."},
+  {n:"yarrow", a:["yarrow"], s:"limit", amt:"A small amount", freq:"Occasionally", note:"Safe in small amounts as part of mixed forage."},
+  {n:"shepherd's purse", a:["shepherds purse","shepherd's purse"], s:"limit", amt:"A small amount", freq:"Occasionally", note:"Safe weed in small amounts."},
+  {n:"nasturtium", a:["nasturtium"], s:"safe", amt:"A few leaves or flowers", freq:"A few times a week", note:"Both leaves and flowers are safe and high in vitamin C."},
+  {n:"marigold / calendula", a:["marigold","calendula","pot marigold"], s:"safe", amt:"A few petals", freq:"A few times a week", note:"Calendula petals are safe. Be sure of the type before picking ornamentals."},
+  {n:"rose", a:["rose","rose petals","rose leaves","rose hips"], s:"safe", amt:"A few petals or leaves", freq:"A few times a week", note:"Petals, leaves and hips are all safe if unsprayed."},
+  {n:"sunflower (leaves and petals)", a:["sunflower","sunflower leaves","sunflower petals"], s:"safe", amt:"A small amount", freq:"A few times a week", note:"Leaves and petals are fine. Not the oily seeds."},
+  {n:"borage", a:["borage"], s:"limit", amt:"A small amount", freq:"Occasionally", note:"Leaves and flowers are safe in small amounts."},
+  {n:"chamomile", a:["chamomile","camomile"], s:"safe", amt:"A few flowers", freq:"A few times a week", note:"Gentle and safe, flowers and leaves."},
+  {n:"hibiscus", a:["hibiscus"], s:"safe", amt:"A few petals or leaves", freq:"A few times a week", note:"Flowers and leaves are safe."},
+  {n:"lavender", a:["lavender"], s:"limit", amt:"A tiny amount", freq:"Occasionally", note:"Safe in very small amounts. The strong scent puts many pigs off."},
+  {n:"comfrey", a:["comfrey"], s:"limit", amt:"A small leaf", freq:"Rarely", note:"Liked as an occasional forage. Large amounts are not advised, so keep it rare."},
+  {n:"bramble leaves (blackberry)", a:["bramble","bramble leaves","blackberry leaves","brambles"], s:"safe", amt:"A few leaves", freq:"Most days", note:"Blackberry and raspberry leaves are excellent forage. Mind the thorns."},
+  {n:"grape vine leaves", a:["grape leaves","vine leaves","grapevine"], s:"safe", amt:"A few leaves", freq:"A few times a week", note:"The leaves are safe, unlike the sugary fruit which is a treat."},
+  {n:"willow", a:["willow","willow branches","willow leaves"], s:"safe", amt:"A small branch with leaves", freq:"A few times a week", note:"Branches and leaves are safe and great for gnawing."},
+  {n:"hazel", a:["hazel","hazel leaves","hazel twigs"], s:"safe", amt:"A small twig with leaves", freq:"A few times a week", note:"Leaves and twigs are safe browse."},
+  {n:"hawthorn", a:["hawthorn"], s:"safe", amt:"A few leaves", freq:"A few times a week", note:"Leaves and flowers are safe forage."},
+  {n:"apple or pear branches", a:["apple branch","apple twig","apple leaves","pear branch","fruit tree twigs"], s:"limit", amt:"A small twig with leaves", freq:"A few times a week", note:"Untreated twigs and leaves are good for gnawing. Avoid stone-fruit wood like cherry and plum."},
+  {n:"birch", a:["birch","birch twigs","birch leaves"], s:"limit", amt:"A small twig", freq:"Occasionally", note:"Safe in small amounts as browse."},
+
+  // Toxic garden plants, shrubs and trees (never)
+  {n:"foxglove", a:["foxglove","digitalis"], s:"never", amt:"None", freq:"Never", note:"Highly poisonous, affects the heart. Keep well away."},
+  {n:"yew", a:["yew"], s:"never", amt:"None", freq:"Never", note:"Extremely poisonous. Even a tiny amount can be fatal."},
+  {n:"oleander", a:["oleander"], s:"never", amt:"None", freq:"Never", note:"Extremely poisonous in any amount."},
+  {n:"rhododendron / azalea", a:["rhododendron","azalea"], s:"never", amt:"None", freq:"Never", note:"All parts are highly toxic."},
+  {n:"lily of the valley", a:["lily of the valley"], s:"never", amt:"None", freq:"Never", note:"Highly poisonous, affects the heart."},
+  {n:"true lily", a:["lily","lilies","daylily","tiger lily"], s:"never", amt:"None", freq:"Never", note:"Toxic. Keep all lilies away from pets."},
+  {n:"daffodil", a:["daffodil","narcissus","daffodil bulb"], s:"never", amt:"None", freq:"Never", note:"Toxic, the bulbs especially. A common spring danger."},
+  {n:"tulip", a:["tulip","tulip bulb"], s:"never", amt:"None", freq:"Never", note:"Toxic, particularly the bulb."},
+  {n:"bluebell", a:["bluebell","bluebells"], s:"never", amt:"None", freq:"Never", note:"All parts are poisonous."},
+  {n:"hyacinth", a:["hyacinth"], s:"never", amt:"None", freq:"Never", note:"Toxic, the bulb especially."},
+  {n:"snowdrop", a:["snowdrop","snowdrops"], s:"never", amt:"None", freq:"Never", note:"Poisonous, the bulb in particular."},
+  {n:"crocus", a:["crocus","autumn crocus","colchicum"], s:"never", amt:"None", freq:"Never", note:"Toxic. Autumn crocus is especially dangerous."},
+  {n:"iris", a:["iris"], s:"never", amt:"None", freq:"Never", note:"Toxic, the roots and rhizomes especially."},
+  {n:"buttercup", a:["buttercup","buttercups"], s:"never", amt:"None", freq:"Avoid", note:"Irritant and toxic when fresh. Avoid in forage."},
+  {n:"ivy", a:["ivy","english ivy"], s:"never", amt:"None", freq:"Never", note:"Toxic. Not to be confused with safe forage."},
+  {n:"hydrangea", a:["hydrangea"], s:"never", amt:"None", freq:"Never", note:"Contains a cyanide-type compound. Toxic."},
+  {n:"holly", a:["holly"], s:"never", amt:"None", freq:"Never", note:"Leaves and berries are toxic."},
+  {n:"mistletoe", a:["mistletoe"], s:"never", amt:"None", freq:"Never", note:"Poisonous, berries especially."},
+  {n:"privet", a:["privet"], s:"never", amt:"None", freq:"Never", note:"A common hedge plant that is poisonous to guinea pigs."},
+  {n:"box / buxus", a:["box","boxwood","buxus"], s:"never", amt:"None", freq:"Never", note:"Common hedging shrub, toxic."},
+  {n:"cherry laurel / laurel", a:["laurel","cherry laurel"], s:"never", amt:"None", freq:"Never", note:"Common hedge that releases cyanide. Very dangerous."},
+  {n:"conifers (pine, leylandii, cypress)", a:["pine","conifer","leylandii","cypress","fir","spruce","cedar"], s:"never", amt:"None", freq:"Avoid", note:"Resinous evergreens are not safe browse. Avoid hedge clippings."},
+  {n:"oak / acorns", a:["oak","acorn","acorns","oak leaves"], s:"never", amt:"None", freq:"Never", note:"High in tannins. Leaves and acorns are toxic."},
+  {n:"bracken / fern", a:["bracken","fern","ferns","bracken fern"], s:"never", amt:"None", freq:"Avoid", note:"Many ferns, bracken especially, are toxic. Avoid."},
+  {n:"ragwort", a:["ragwort"], s:"never", amt:"None", freq:"Never", note:"Causes liver damage. A highly toxic weed."},
+  {n:"nightshade", a:["nightshade","deadly nightshade","woody nightshade","belladonna"], s:"never", amt:"None", freq:"Never", note:"All nightshades are poisonous, including potato and tomato foliage."},
+  {n:"hemlock", a:["hemlock"], s:"never", amt:"None", freq:"Never", note:"Deadly poisonous. Never allow access."},
+  {n:"laburnum", a:["laburnum"], s:"never", amt:"None", freq:"Never", note:"Highly toxic, the seeds and pods especially."},
+  {n:"lupin", a:["lupin","lupine","lupins"], s:"never", amt:"None", freq:"Never", note:"Seeds and pods are toxic."},
+  {n:"delphinium / larkspur", a:["delphinium","larkspur"], s:"never", amt:"None", freq:"Never", note:"All parts are poisonous."},
+  {n:"monkshood / aconite", a:["monkshood","aconite","wolfsbane"], s:"never", amt:"None", freq:"Never", note:"One of the most poisonous garden plants. Deadly."},
+  {n:"hellebore", a:["hellebore","christmas rose"], s:"never", amt:"None", freq:"Never", note:"All parts are toxic."},
+  {n:"anemone", a:["anemone"], s:"never", amt:"None", freq:"Avoid", note:"Irritant and toxic. Avoid."},
+  {n:"poppy", a:["poppy","poppies"], s:"never", amt:"None", freq:"Never", note:"Toxic, contains harmful alkaloids."},
+  {n:"chrysanthemum", a:["chrysanthemum"], s:"never", amt:"None", freq:"Never", note:"Contains pyrethrins, toxic to small animals."},
+  {n:"geranium / pelargonium", a:["geranium","pelargonium"], s:"never", amt:"None", freq:"Avoid", note:"Toxic to guinea pigs. Avoid."},
+  {n:"begonia", a:["begonia"], s:"never", amt:"None", freq:"Avoid", note:"Toxic, the tubers especially."},
+  {n:"poinsettia", a:["poinsettia"], s:"never", amt:"None", freq:"Avoid", note:"Irritant sap. Keep away."},
+  {n:"cyclamen", a:["cyclamen"], s:"never", amt:"None", freq:"Never", note:"Toxic, the tubers especially."},
+  {n:"clematis", a:["clematis"], s:"never", amt:"None", freq:"Avoid", note:"Irritant and toxic. Avoid."},
+  {n:"wisteria", a:["wisteria"], s:"never", amt:"None", freq:"Never", note:"Seeds and pods are toxic."},
+  {n:"sweet pea", a:["sweet pea","sweetpea"], s:"never", amt:"None", freq:"Never", note:"The ornamental sweet pea is toxic, unlike edible peas."},
+  {n:"morning glory", a:["morning glory"], s:"never", amt:"None", freq:"Never", note:"Seeds and plant are toxic."},
+  {n:"lantana", a:["lantana"], s:"never", amt:"None", freq:"Never", note:"All parts are poisonous."},
+  {n:"spurge / euphorbia", a:["spurge","euphorbia"], s:"never", amt:"None", freq:"Never", note:"The milky sap is a severe irritant and toxic."},
+  {n:"elder / elderberry", a:["elder","elderberry","elderflower"], s:"never", amt:"None", freq:"Avoid", note:"Leaves, stems and raw berries are toxic. Avoid."},
+  {n:"arum / calla lily", a:["arum","calla lily","arum lily","cuckoo pint"], s:"never", amt:"None", freq:"Never", note:"Contains sharp oxalate crystals. Toxic."},
+  {n:"philodendron / pothos", a:["philodendron","pothos","devils ivy","dieffenbachia"], s:"never", amt:"None", freq:"Never", note:"Common houseplants with toxic oxalates. Keep away."},
+
+  // NZ kitchen and orchard foods
+  {n:"feijoa", a:["feijoa","pineapple guava","acca"], s:"limit", amt:"A small piece of flesh", freq:"Once a week", note:"Sweet and quite sugary. A small amount of ripe flesh as an occasional treat."},
+  {n:"tamarillo", a:["tamarillo","tree tomato"], s:"never", amt:"None", freq:"Avoid", note:"In the nightshade family and very acidic. Best avoided."},
+  {n:"nashi pear", a:["nashi","nashi pear","asian pear"], s:"limit", amt:"A small piece", freq:"1 to 2 times a week", note:"Like a crisp pear. Remove the pips. Sugary treat."},
+  {n:"kiwiberry", a:["kiwiberry","kiwi berry","baby kiwi"], s:"limit", amt:"One small berry", freq:"1 to 2 times a week", note:"Like a tiny kiwifruit. High in vitamin C but sugary."},
+  {n:"boysenberry", a:["boysenberry","boysenberries"], s:"limit", amt:"1 to 2 berries", freq:"1 to 2 times a week", note:"Small sweet berry treat."},
+  {n:"blackcurrant / redcurrant", a:["blackcurrant","redcurrant","currant","currants"], s:"limit", amt:"A few berries", freq:"1 to 2 times a week", note:"Small tart berries, fresh only. Good vitamin C."},
+  {n:"gooseberry", a:["gooseberry","gooseberries"], s:"limit", amt:"One small berry", freq:"Occasionally", note:"Tart fresh berry, small amounts."},
+  {n:"persimmon", a:["persimmon","sharon fruit"], s:"limit", amt:"A small piece", freq:"Once a week", note:"Very sweet, a treat sized portion of ripe flesh."},
+  {n:"quince", a:["quince"], s:"limit", amt:"A small piece", freq:"Occasionally", note:"Best as a small amount of soft ripe flesh."},
+  {n:"NZ spinach", a:["nz spinach","new zealand spinach","kokihi","tetragonia"], s:"limit", amt:"A small leaf", freq:"Rarely", note:"Very high in oxalates, even more than regular spinach. Only rarely."},
+  {n:"olive", a:["olive","olives"], s:"never", amt:"None", freq:"Avoid", note:"Salty, oily and processed. Not suitable."},
+
+  // Processed and human foods a child might offer
+  {n:"biscuits / cookies", a:["biscuit","biscuits","cookie","cookies"], s:"never", amt:"None", freq:"Never", note:"Sugary processed food. Never feed."},
+  {n:"chips / crisps / fries", a:["chips","crisps","fries","hot chips","french fries","potato chips"], s:"never", amt:"None", freq:"Never", note:"Salty, oily and processed. Never feed."},
+  {n:"lollies / sweets", a:["lollies","lolly","sweets","candy","gummy","gummies"], s:"never", amt:"None", freq:"Never", note:"Pure sugar. Harmful. Never feed."},
+  {n:"ice cream", a:["ice cream","icecream"], s:"never", amt:"None", freq:"Never", note:"Dairy and sugar, cannot be digested."},
+  {n:"marshmallow", a:["marshmallow","marshmallows"], s:"never", amt:"None", freq:"Never", note:"Pure sugar. Never feed."},
+  {n:"chewing gum", a:["chewing gum","gum","bubblegum"], s:"never", amt:"None", freq:"Never", note:"Not food, and often contains xylitol. Dangerous."},
+  {n:"cereal", a:["cereal","cornflakes","muesli","weetbix"], s:"never", amt:"None", freq:"Avoid", note:"Processed and starchy. Not suitable."},
+  {n:"cooked or leftover food", a:["cooked food","leftovers","dinner","pizza","cooked vegetables","takeaways"], s:"never", amt:"None", freq:"Never", note:"Only raw fresh veg and fruit. Cooked or seasoned human food is not safe."},
+
+  // Weeds
+  {n:"dock", a:["dock","dock leaves"], s:"limit", amt:"A small leaf", freq:"Occasionally", note:"Safe in small amounts but high in oxalates, so not often."},
+  {n:"sorrel", a:["sorrel","sheep sorrel"], s:"never", amt:"None", freq:"Avoid", note:"Very high in oxalic acid. Avoid."},
+  {n:"oxalis / wood sorrel", a:["oxalis","wood sorrel","soursob","soursobs"], s:"never", amt:"None", freq:"Avoid", note:"High in oxalic acid. Avoid."},
+  {n:"fat hen", a:["fat hen","lambs quarters","lambsquarters"], s:"limit", amt:"A small amount", freq:"Occasionally", note:"Edible weed but high in oxalates, so only occasionally."},
+  {n:"stinging nettle", a:["nettle","stinging nettle"], s:"limit", amt:"A small amount, wilted", freq:"Occasionally", note:"Once wilted or dried it loses its sting and is safe. Never fresh and stinging."},
+  {n:"thistle", a:["thistle","scotch thistle"], s:"limit", amt:"A soft young leaf", freq:"Occasionally", note:"Soft young leaves only, mind the prickles. Sow thistle is the gentler option."},
+  {n:"gorse", a:["gorse"], s:"never", amt:"None", freq:"Avoid", note:"Spiny invasive weed, not suitable forage."},
+  {n:"broom", a:["broom","scotch broom"], s:"never", amt:"None", freq:"Never", note:"Contains toxic alkaloids."},
+  {n:"convolvulus / bindweed", a:["bindweed","convolvulus"], s:"never", amt:"None", freq:"Never", note:"Toxic climbing weed. Avoid."},
+  {n:"tradescantia / wandering willie", a:["tradescantia","wandering willie","wandering jew"], s:"never", amt:"None", freq:"Avoid", note:"Sap irritates skin and gut. Avoid."},
+
+  // NZ native plants, toxic
+  {n:"tutu", a:["tutu","coriaria"], s:"never", amt:"None", freq:"Never", note:"One of NZ's most poisonous native plants. Deadly to animals. Never allow access."},
+  {n:"kowhai", a:["kowhai","sophora"], s:"never", amt:"None", freq:"Never", note:"Seeds and foliage are toxic. Avoid entirely."},
+  {n:"ngaio", a:["ngaio","myoporum"], s:"never", amt:"None", freq:"Never", note:"Leaves contain a liver toxin. Poisonous."},
+  {n:"karaka", a:["karaka","corynocarpus"], s:"never", amt:"None", freq:"Never", note:"The berries and kernels are highly toxic."},
+  {n:"poroporo", a:["poroporo","solanum laciniatum"], s:"never", amt:"None", freq:"Never", note:"A native nightshade. Green parts and unripe fruit are toxic."},
+  {n:"agapanthus", a:["agapanthus","lily of the nile"], s:"never", amt:"None", freq:"Never", note:"Common NZ garden plant. The sap is an irritant and it is toxic."},
+
+  // NZ natives and common hedging, safety not established
+  {n:"pittosporum", a:["pittosporum","kohuhu","tarata","lemonwood","tawhiwhi","kohukohu"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"A very common NZ hedge. Safety for guinea pigs is not established, so do not offer it to be safe."},
+  {n:"griselinia", a:["griselinia","broadleaf","kapuka"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Common NZ hedge. Not established as safe for guinea pigs, so avoid."},
+  {n:"hebe / koromiko", a:["hebe","koromiko","veronica"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native shrub. Low toxicity is suspected but feeding is not established, so avoid."},
+  {n:"coprosma", a:["coprosma","taupata","karamu","mirror bush"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native shrub. Not established as safe, so avoid offering it."},
+  {n:"cabbage tree", a:["cabbage tree","ti kouka","cordyline","ti"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Tough fibrous leaves. Not established as a safe food, so avoid."},
+  {n:"NZ flax", a:["flax","harakeke","phormium"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Very fibrous and not a food plant. Avoid offering it."},
+  {n:"kawakawa", a:["kawakawa","piper excelsum"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Peppery native used medicinally by people. Not established for guinea pigs."},
+  {n:"pohutukawa / rata", a:["pohutukawa","rata","metrosideros"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native tree. Not established as safe to eat, so avoid."},
+  {n:"manuka / kanuka", a:["manuka","kanuka","tea tree"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Aromatic native. Not established as a safe food, so avoid."},
+  {n:"nikau palm", a:["nikau","nikau palm"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native palm. Not established as safe, so avoid."},
+  {n:"lancewood / five finger", a:["lancewood","horoeka","five finger","pseudopanax"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native tree. Not established as safe, so avoid."},
+  {n:"rangiora", a:["rangiora","bushmans friend"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Large-leaved native. Some toxicity is suspected, so avoid."},
+  {n:"toetoe", a:["toetoe","toi toi","toitoi"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native grass with sharp leaf edges. Avoid offering it."},
+  {n:"renga lily", a:["renga renga","rengarenga","arthropodium"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native lily. Not established as safe, so avoid."},
+  {n:"titoki", a:["titoki"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native tree, seeds suspected toxic. Avoid."},
+  {n:"native conifers (rimu, kauri, totara)", a:["rimu","kauri","totara","matai","miro"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Native conifers. Like other conifers, treat as not safe to eat."},
+  {n:"native beech", a:["beech","tawhai","nothofagus"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Not established as safe, so avoid."},
+
+  // Common ornamentals in NZ gardens
+  {n:"camellia", a:["camellia"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Common ornamental. Not established as safe to eat, so avoid."},
+  {n:"photinia", a:["photinia","red robin"], s:"never", amt:"None", freq:"Avoid", note:"Young red leaves contain cyanide-type compounds. Avoid."},
+  {n:"escallonia", a:["escallonia"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Common hedge. Not established as safe, so avoid."},
+  {n:"magnolia", a:["magnolia"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Ornamental tree. Not established as safe to eat, so avoid."},
+  {n:"daphne", a:["daphne"], s:"never", amt:"None", freq:"Never", note:"Highly toxic ornamental, berries especially."},
+  {n:"gardenia", a:["gardenia"], s:"never", amt:"None", freq:"Avoid", note:"Toxic ornamental. Avoid."},
+  {n:"jasmine", a:["jasmine","star jasmine"], s:"never", amt:"None", freq:"Avoid", note:"Several plants sold as jasmine are toxic. Avoid to be safe."},
+  {n:"honeysuckle", a:["honeysuckle"], s:"never", amt:"None", freq:"Avoid", note:"Berries and parts can be toxic. Avoid."},
+  {n:"hosta", a:["hosta"], s:"never", amt:"None", freq:"Avoid", note:"Toxic to pets. Avoid."},
+  {n:"dahlia", a:["dahlia"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Not established as safe, so avoid."},
+  {n:"petunia", a:["petunia"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Not established as safe, so avoid."},
+  {n:"primrose / primula", a:["primrose","primula"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"Can irritate. Not established as safe, so avoid."},
+  {n:"fuchsia", a:["fuchsia"], s:"unknown", amt:"Best avoided", freq:"Avoid", note:"The berries are edible to people, but feeding to guinea pigs is not established. Avoid."},
+  {n:"pansy / viola", a:["pansy","viola","violet"], s:"limit", amt:"A few petals", freq:"Occasionally", note:"Pansy and viola flowers are edible and safe in small amounts if unsprayed."},
+  {n:"cornflower", a:["cornflower","bachelor button"], s:"safe", amt:"A few petals", freq:"A few times a week", note:"Edible flower, safe in small amounts."}
+];
+
+const STATUS_TEXT = {safe:"Yes", limit:"In moderation", never:"No", unknown:"Not established"};
+const STATUS_ICON = {safe:"\uD83D\uDC4D", limit:"\u26A0\uFE0F", never:"\uD83D\uDEAB", unknown:"\u2754"};
+const QUICK = ["capsicum","cucumber","carrot","apple","strawberry","kale","spinach","banana","tomato","iceberg lettuce","grapes","broccoli"];
+
+const q = document.getElementById('q');
+const result = document.getElementById('result');
+const quick = document.getElementById('quick');
+const clearBtn = document.getElementById('clear');
+const chipsBox = document.getElementById('chips');
+
+QUICK.forEach(name=>{
+  const b=document.createElement('button');
+  b.className='chip';b.textContent=name;
+  b.onclick=()=>{q.value=name;render();q.focus();};
+  chipsBox.appendChild(b);
+});
+
+function score(food, term){
+  const terms=[food.n,...food.a].map(t=>t.toLowerCase());
+  let best=0;
+  for(const t of terms){
+    if(t===term){best=Math.max(best,100);}
+    else if(t.startsWith(term)){best=Math.max(best,70);}
+    else if(t.split(/[\s/(),]+/).some(w=>w.startsWith(term))){best=Math.max(best,55);}
+    else if(t.includes(term)){best=Math.max(best,30);}
+  }
+  return best;
+}
+
+function search(term){
+  return FOODS.map(f=>({f,sc:score(f,term)})).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc).map(x=>x.f);
+}
+
+function cardHTML(f){
+  return `
+  <div class="card ${f.s}">
+    <div class="card-top">
+      <div class="food-name">${f.n}</div>
+      <div class="badge ${f.s}">${STATUS_ICON[f.s]} ${STATUS_TEXT[f.s]}</div>
+    </div>
+    <div class="rows">
+      <div class="row"><span class="ic">\uD83E\uDD63</span><div><b>How much:</b> ${f.amt}</div></div>
+      <div class="row"><span class="ic">\uD83D\uDCC5</span><div><b>How often:</b> ${f.freq}</div></div>
+      <div class="row"><span class="ic">\uD83D\uDCA1</span><div class="note">${f.note}</div></div>
+    </div>
+  </div>`;
+}
+
+function render(){
+  const term=q.value.trim().toLowerCase();
+  clearBtn.classList.toggle('show', term.length>0);
+  if(!term){result.innerHTML='';quick.style.display='';return;}
+  quick.style.display='none';
+
+  const matches=search(term);
+  if(matches.length===0){
+    result.innerHTML=`<div class="card never" style="border-left-color:var(--ink-soft)">
+      <div class="food-name" style="text-transform:none">Not on the list</div>
+      <p class="note" style="margin:10px 0 0">This food is not in the guide. Do not assume it is safe. When unsure, leave it out and check with an exotic vet before offering it.</p>
+    </div>`;
+    return;
+  }
+
+  let html=cardHTML(matches[0]);
+  const rest=matches.slice(1,5);
+  if(rest.length){
+    html+=`<div class="more"><div class="more-label">Other matches</div>`;
+    rest.forEach((f,i)=>{html+=`<button class="sug" data-i="${i}"><span class="dot ${f.s}"></span><span class="nm">${f.n}</span></button>`;});
+    html+=`</div>`;
+  }
+  result.innerHTML=html;
+  result.querySelectorAll('.sug').forEach((el)=>{el.onclick=()=>{q.value=rest[+el.dataset.i].n;render();q.focus();};});
+}
+
+q.addEventListener('input',render);
+clearBtn.addEventListener('click',()=>{q.value='';render();q.focus();});
+q.addEventListener('keydown',e=>{if(e.key==='Escape'){q.value='';render();}});
+window.addEventListener('load',()=>{q.focus();});
+q.focus();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+</script>
+</body>
+</html>
